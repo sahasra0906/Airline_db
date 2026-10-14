@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Payments{% endblock %}
+{% block content %}
+<div class="page-hero">
+  <div><h1>💳 Payment Records</h1><p>All payment transactions from the live database.</p></div>
+  <div class="hero-badge">💳</div>
+</div>
+
+<div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
+  <div class="stat-card"><div class="value">₹{{ "{:,.0f}".format(total_rev) }}</div><div class="label">Total Revenue</div></div>
+  <div class="stat-card"><div class="value">₹{{ "{:,.0f}".format(total_ref) }}</div><div class="label">Total Refunds</div></div>
+  <div class="stat-card"><div class="value">₹{{ "{:,.0f}".format(total_rev - total_ref) }}</div><div class="label">Net Revenue</div></div>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Pay#</th><th>Booking#</th><th>Passenger</th><th>Flight</th><th>Amount</th><th>Mode</th><th>Status</th><th>Date</th><th>Reference</th></tr></thead>
+      <tbody>
+      {% for p in payments %}
+        <tr>
+          <td>#{{ p.payment_id }}</td>
+          <td><a href="{{ url_for('bookings.detail', bid=p.booking_id) }}" style="color:var(--accent);text-decoration:none">#{{ p.booking_id }}</a></td>
+          <td>{{ p.passenger }}</td>
+          <td>{{ p.flight_id }}</td>
+          <td><strong>₹{{ "{:,.0f}".format(p.amount) }}</strong></td>
+          <td><span class="badge badge-info">{{ p.payment_mode }}</span></td>
+          <td>
+            {% if p.payment_status=='Success'  %}<span class="badge badge-success">{{ p.payment_status }}</span>
+            {% elif p.payment_status=='Refunded'%}<span class="badge badge-warning">{{ p.payment_status }}</span>
+            {% elif p.payment_status=='Failed'  %}<span class="badge badge-danger">{{ p.payment_status }}</span>
+            {% else %}<span class="badge badge-muted">{{ p.payment_status }}</span>{% endif %}
+          </td>
+          <td style="color:var(--muted);font-size:.82rem">{{ p.payment_date[:10] }}</td>
+          <td style="font-family:monospace;font-size:.8rem;color:var(--muted)">{{ p.transaction_ref }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

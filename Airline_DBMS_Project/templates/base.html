@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}AirlineDB{% endblock %} – Airline Reservation System</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a class="navbar-brand" href="{{ url_for('main.dashboard') }}">
+    <div class="logo-icon">✈</div>
+    <div>
+      <div>AirlineDB</div>
+      <div class="navbar-subtitle">Reservation & Flight Ops</div>
+    </div>
+  </a>
+  <ul class="navbar-nav">
+    <li><a href="{{ url_for('main.dashboard') }}"          {% if request.endpoint=='main.dashboard'     %}class="active"{% endif %}>Dashboard</a></li>
+    <li><a href="{{ url_for('flights.index') }}"           {% if 'flights'  in request.endpoint        %}class="active"{% endif %}>Flights</a></li>
+    <li><a href="{{ url_for('passengers.index') }}"        {% if 'passengers' in request.endpoint      %}class="active"{% endif %}>Passengers</a></li>
+    <li><a href="{{ url_for('bookings.index') }}"          {% if 'bookings' in request.endpoint        %}class="active"{% endif %}>Bookings</a></li>
+    <li><a href="{{ url_for('tickets.index') }}"           {% if 'tickets'  in request.endpoint        %}class="active"{% endif %}>Tickets</a></li>
+    <li><a href="{{ url_for('checkin.index') }}"           {% if 'checkin'  in request.endpoint        %}class="active"{% endif %}>Check-In</a></li>
+    <li><a href="{{ url_for('baggage.index') }}"           {% if 'baggage'  in request.endpoint        %}class="active"{% endif %}>Baggage</a></li>
+    <li><a href="{{ url_for('cancellations.index') }}"     {% if 'cancellations' in request.endpoint   %}class="active"{% endif %}>Cancellations</a></li>
+    <li><a href="{{ url_for('payments.index') }}"          {% if 'payments' in request.endpoint        %}class="active"{% endif %}>Payments</a></li>
+    <li><a href="{{ url_for('reports.index') }}"           {% if 'reports'  in request.endpoint        %}class="active"{% endif %}>Reports</a></li>
+  </ul>
+</nav>
+
+<!-- FLASH MESSAGES -->
+<div style="max-width:1320px;margin:0 auto;padding:.8rem 1.5rem 0;">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+      <div class="alert alert-{{ cat }}">
+        <span>{{ '✅' if cat=='success' else '❌' if cat=='danger' else '⚠️' }}</span>
+        {{ msg }}
+      </div>
+    {% endfor %}
+  {% endwith %}
+</div>
+
+<!-- CONTENT -->
+<main>{% block content %}{% endblock %}</main>
+
+<!-- FOOTER -->
+<footer>
+  AirlineDB &bull; Airline Reservation &amp; Flight Operations Management System &bull; Live SQLite Database
+</footer>
+
+</body>
+</html>

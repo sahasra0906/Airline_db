@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Tickets{% endblock %}
+{% block content %}
+<div class="page-hero">
+  <div><h1>🎫 Issued Tickets</h1><p>All tickets issued from confirmed bookings.</p></div>
+  <div class="hero-badge">🎫</div>
+</div>
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Ticket#</th><th>Booking#</th><th>Passenger</th><th>Flight</th><th>Route</th><th>Departure</th><th>Seat</th><th>Class</th><th>Fare</th><th>Status</th></tr></thead>
+      <tbody>
+      {% for t in tickets %}
+        <tr>
+          <td>#{{ t.ticket_id }}</td>
+          <td><a href="{{ url_for('bookings.detail', bid=t.booking_id) }}" style="color:var(--accent);text-decoration:none">#{{ t.booking_id }}</a></td>
+          <td>{{ t.passenger }}</td>
+          <td>{{ t.flight_id }}</td>
+          <td>{{ t.route }}</td>
+          <td style="color:var(--muted);font-size:.83rem">{{ t.departure_time[:16].replace('T',' ') }}</td>
+          <td><strong>{{ t.seat_number }}</strong></td>
+          <td><span class="badge badge-info">{{ t.seat_class }}</span></td>
+          <td>₹{{ "{:,.0f}".format(t.total_fare) }}</td>
+          <td>{% if t.ticket_status=='Active' %}<span class="badge badge-success">{{ t.ticket_status }}</span>
+              {% elif t.ticket_status=='Cancelled' %}<span class="badge badge-danger">{{ t.ticket_status }}</span>
+              {% else %}<span class="badge badge-muted">{{ t.ticket_status }}</span>{% endif %}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

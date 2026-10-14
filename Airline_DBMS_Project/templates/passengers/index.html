@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Passengers{% endblock %}
+{% block content %}
+<div class="page-hero">
+  <div>
+    <h1>👤 Passengers</h1>
+    <p>Registered passengers in the system.</p>
+    <a href="{{ url_for('passengers.add') }}" class="btn btn-primary" style="margin-top:1rem">✚ Add Passenger</a>
+  </div>
+  <div class="hero-badge">👤</div>
+</div>
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Passport</th><th>DOB</th><th>Nationality</th><th>Bookings</th><th></th></tr></thead>
+      <tbody>
+      {% for p in passengers %}
+        <tr>
+          <td>#{{ p.passenger_id }}</td>
+          <td><strong>{{ p.first_name }} {{ p.last_name }}</strong></td>
+          <td style="color:var(--muted)">{{ p.email }}</td>
+          <td>{{ p.phone or '—' }}</td>
+          <td>{{ p.passport_no or '—' }}</td>
+          <td style="color:var(--muted)">{{ p.date_of_birth or '—' }}</td>
+          <td>{{ p.nationality }}</td>
+          <td><span class="badge badge-info">{{ p.booking_count }}</span></td>
+          <td><a href="{{ url_for('passengers.detail', pid=p.passenger_id) }}" class="btn btn-outline btn-sm">View</a></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Reports{% endblock %}
+{% block content %}
+<div class="page-hero">
+  <div><h1>📊 Reports</h1><p>SQL-powered reports from the live airline database.</p></div>
+  <div class="hero-badge">📊</div>
+</div>
+<div class="actions-grid">
+  <a href="{{ url_for('reports.manifest') }}" class="action-card"><div class="icon">🧾</div><div class="ac-title">Flight Manifest</div><div class="ac-desc">All passengers per flight</div><div class="arrow">→</div></a>
+  <a href="{{ url_for('reports.occupancy') }}" class="action-card"><div class="icon">💺</div><div class="ac-title">Occupancy</div><div class="ac-desc">Seat occupancy per flight</div><div class="arrow">→</div></a>
+  <a href="{{ url_for('reports.revenue') }}" class="action-card"><div class="icon">💰</div><div class="ac-title">Revenue</div><div class="ac-desc">Revenue & refunds per flight</div><div class="arrow">→</div></a>
+  <a href="{{ url_for('reports.baggage') }}" class="action-card"><div class="icon">🧳</div><div class="ac-title">Baggage</div><div class="ac-desc">Baggage summary by flight</div><div class="arrow">→</div></a>
+  <a href="{{ url_for('reports.cancellations') }}" class="action-card"><div class="icon">❌</div><div class="ac-title">Cancellations</div><div class="ac-desc">All cancelled bookings & refunds</div><div class="arrow">→</div></a>
+  <a href="{{ url_for('reports.ontime') }}" class="action-card"><div class="icon">⏱️</div><div class="ac-title">On-Time Status</div><div class="ac-desc">Flight schedule & status</div><div class="arrow">→</div></a>
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Cancellations Report{% endblock %}
+{% block content %}
+<a href="{{ url_for('reports.index') }}" class="back-link">← Reports</a>
+<div class="page-hero"><div><h1>❌ Cancellations Report</h1><p>All cancelled bookings and refund amounts.</p></div><div class="hero-badge">❌</div></div>
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Booking#</th><th>Passenger</th><th>Flight</th><th>Date</th><th>Reason</th><th>Refund</th></tr></thead>
+      <tbody>
+      {% for r in rows %}
+        <tr>
+          <td>{{ r.cancellation_id }}</td>
+          <td>#{{ r.booking_id }}</td>
+          <td>{{ r.passenger }}</td>
+          <td>{{ r.flight_id }}</td>
+          <td style="color:var(--muted)">{{ r.cancellation_date[:10] }}</td>
+          <td>{{ r.reason or '—' }}</td>
+          <td><span class="badge badge-warning">₹{{ "{:,.0f}".format(r.refund_amount) }}</span></td>
+        </tr>
+      {% else %}
+        <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:2rem">No cancellations found.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

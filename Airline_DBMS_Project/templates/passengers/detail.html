@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}{{ p.first_name }} {{ p.last_name }}{% endblock %}
+{% block content %}
+<a href="{{ url_for('passengers.index') }}" class="back-link">← Back to Passengers</a>
+<div class="page-hero">
+  <div>
+    <h1>{{ p.first_name }} {{ p.last_name }}</h1>
+    <p>{{ p.email }}</p>
+  </div>
+  <div class="hero-badge">👤</div>
+</div>
+<div class="card">
+  <div class="card-title" style="margin-bottom:1rem">Passenger Details</div>
+  <div class="meta-grid">
+    <div class="meta-item"><span class="mk">Passenger ID</span><span class="mv">#{{ p.passenger_id }}</span></div>
+    <div class="meta-item"><span class="mk">Email</span><span class="mv">{{ p.email }}</span></div>
+    <div class="meta-item"><span class="mk">Phone</span><span class="mv">{{ p.phone or '—' }}</span></div>
+    <div class="meta-item"><span class="mk">Passport</span><span class="mv">{{ p.passport_no or '—' }}</span></div>
+    <div class="meta-item"><span class="mk">Date of Birth</span><span class="mv">{{ p.date_of_birth or '—' }}</span></div>
+    <div class="meta-item"><span class="mk">Nationality</span><span class="mv">{{ p.nationality }}</span></div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">Booking History</span>
+    <a href="{{ url_for('bookings.new') }}" class="btn btn-primary btn-sm">✚ New Booking</a>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Booking#</th><th>Flight</th><th>Route</th><th>Departure</th><th>Fare</th><th>Status</th></tr></thead>
+      <tbody>
+      {% for b in bookings %}
+        <tr>
+          <td><a href="{{ url_for('bookings.detail', bid=b.booking_id) }}" style="color:var(--accent);text-decoration:none">#{{ b.booking_id }}</a></td>
+          <td>{{ b.flight_id }}</td>
+          <td>{{ b.route }}</td>
+          <td>{{ b.departure_time[:16].replace('T',' ') }}</td>
+          <td>₹{{ "{:,.0f}".format(b.total_fare) }}</td>
+          <td>{% if b.booking_status=='Confirmed' %}<span class="badge badge-success">{{ b.booking_status }}</span>{% else %}<span class="badge badge-danger">{{ b.booking_status }}</span>{% endif %}</td>
+        </tr>
+      {% else %}
+        <tr><td colspan="6" style="text-align:center;color:var(--muted);padding:2rem">No bookings yet.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}Booking #{{ booking.booking_id }}{% endblock %}
+{% block content %}
+<a href="{{ url_for('bookings.index') }}" class="back-link">← Back to Bookings</a>
+<div class="page-hero">
+  <div>
+    <h1>Booking #{{ booking.booking_id }}</h1>
+    <p>{{ booking.passenger }} &bull; {{ booking.route }}</p>
+  </div>
+  <div class="hero-badge">📋</div>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.2rem">
+
+  <div class="card">
+    <div class="card-title" style="margin-bottom:1rem">Booking Info</div>
+    <div class="meta-grid">
+      <div class="meta-item"><span class="mk">Passenger</span><span class="mv">{{ booking.passenger }}</span></div>
+      <div class="meta-item"><span class="mk">Email</span><span class="mv">{{ booking.email }}</span></div>
+      <div class="meta-item"><span class="mk">Passport</span><span class="mv">{{ booking.passport_no or '—' }}</span></div>
+      <div class="meta-item"><span class="mk">Flight</span><span class="mv">{{ booking.flight_id }}</span></div>
+      <div class="meta-item"><span class="mk">Route</span><span class="mv">{{ booking.route }}</span></div>
+      <div class="meta-item"><span class="mk">Departure</span><span class="mv">{{ booking.departure_time[:16].replace('T',' ') }}</span></div>
+      <div class="meta-item"><span class="mk">Total Fare</span><span class="mv">₹{{ "{:,.0f}".format(booking.total_fare) }}</span></div>
+      <div class="meta-item"><span class="mk">Status</span><span class="mv">
+        {% if booking.booking_status=='Confirmed' %}<span class="badge badge-success">{{ booking.booking_status }}</span>
+        {% else %}<span class="badge badge-danger">{{ booking.booking_status }}</span>{% endif %}
+      </span></div>
+    </div>
+  </div>
+
+  {% if ticket %}
+  <div class="card">
+    <div class="card-title" style="margin-bottom:1rem">🎫 Ticket</div>
+    <div class="meta-grid">
+      <div class="meta-item"><span class="mk">Ticket ID</span><span class="mv">#{{ ticket.ticket_id }}</span></div>
+      <div class="meta-item"><span class="mk">Seat Number</span><span class="mv"><strong>{{ ticket.seat_number }}</strong></span></div>
+      <div class="meta-item"><span class="mk">Class</span><span class="mv">{{ ticket.seat_class }}</span></div>
+      <div class="meta-item"><span class="mk">Status</span><span class="mv">
+        {% if ticket.ticket_status=='Active' %}<span class="badge badge-info">{{ ticket.ticket_status }}</span>
+        {% else %}<span class="badge badge-muted">{{ ticket.ticket_status }}</span>{% endif %}
+      </span></div>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if payment %}
+  <div class="card">
+    <div class="card-title" style="margin-bottom:1rem">💳 Payment</div>
+    <div class="meta-grid">
+      <div class="meta-item"><span class="mk">Amount</span><span class="mv">₹{{ "{:,.0f}".format(payment.amount) }}</span></div>
+      <div class="meta-item"><span class="mk">Mode</span><span class="mv">{{ payment.payment_mode }}</span></div>
+      <div class="meta-item"><span class="mk">Status</span><span class="mv">
+        {% if payment.payment_status=='Success' %}<span class="badge badge-success">{{ payment.payment_status }}</span>
+        {% elif payment.payment_status=='Refunded' %}<span class="badge badge-warning">{{ payment.payment_status }}</span>
+        {% else %}<span class="badge badge-danger">{{ payment.payment_status }}</span>{% endif %}
+      </span></div>
+      <div class="meta-item"><span class="mk">Reference</span><span class="mv" style="font-size:.82rem">{{ payment.transaction_ref }}</span></div>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if checkin %}
+  <div class="card">
+    <div class="card-title" style="margin-bottom:1rem">✅ Check-In</div>
+    <div class="meta-grid">
+      <div class="meta-item"><span class="mk">Check-In Time</span><span class="mv">{{ checkin.checkin_time[:16].replace('T',' ') }}</span></div>
+      <div class="meta-item"><span class="mk">Gate</span><span class="mv">{{ checkin.gate_number }}</span></div>
+      <div class="meta-item"><span class="mk">Boarding Pass</span><span class="mv" style="font-family:monospace;font-size:.88rem">{{ checkin.boarding_pass }}</span></div>
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+
+{% if baggage %}
+<div class="card">
+  <div class="card-title" style="margin-bottom:1rem">🧳 Baggage</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Type</th><th>Weight (kg)</th><th>Extra Charge</th></tr></thead>
+      <tbody>
+      {% for bg in baggage %}
+        <tr>
+          <td>{{ bg.baggage_id }}</td>
+          <td>{{ bg.baggage_type }}</td>
+          <td>{{ bg.weight_kg }}</td>
+          <td>{% if bg.extra_charge > 0 %}<span class="badge badge-warning">₹{{ "{:,.0f}".format(bg.extra_charge) }}</span>{% else %}<span style="color:var(--muted)">₹0</span>{% endif %}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+<div style="display:flex;gap:.8rem;flex-wrap:wrap">
+  {% if booking.booking_status == 'Confirmed' and not checkin %}
+    <a href="{{ url_for('checkin.index') }}" class="btn btn-success">✅ Check In</a>
+  {% endif %}
+  {% if booking.booking_status == 'Confirmed' %}
+    <a href="{{ url_for('baggage.index') }}" class="btn btn-outline">🧳 Add Baggage</a>
+    <a href="{{ url_for('cancellations.index') }}" class="btn btn-danger">❌ Cancel Booking</a>
+  {% endif %}
+</div>
+
+{% endblock %}

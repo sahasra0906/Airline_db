@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Revenue Report{% endblock %}
+{% block content %}
+<a href="{{ url_for('reports.index') }}" class="back-link">← Reports</a>
+<div class="page-hero"><div><h1>💰 Revenue Report</h1><p>Revenue and refunds grouped by flight.</p></div><div class="hero-badge">💰</div></div>
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Flight</th><th>Route</th><th>Transactions</th><th>Revenue</th><th>Refunds</th><th>Net Revenue</th></tr></thead>
+      <tbody>
+      {% for r in rows %}
+        <tr>
+          <td><strong>{{ r.flight_id }}</strong></td>
+          <td>{{ r.route }}</td>
+          <td>{{ r.payments }}</td>
+          <td><span class="badge badge-success">₹{{ "{:,.0f}".format(r.revenue or 0) }}</span></td>
+          <td><span class="badge badge-warning">₹{{ "{:,.0f}".format(r.refunds or 0) }}</span></td>
+          <td><strong>₹{{ "{:,.0f}".format((r.revenue or 0) - (r.refunds or 0)) }}</strong></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

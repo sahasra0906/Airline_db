@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}New Booking{% endblock %}
+{% block content %}
+<a href="{{ url_for('bookings.index') }}" class="back-link">← Back to Bookings</a>
+<div class="page-hero">
+  <div><h1>✚ New Booking</h1><p>Select a passenger, flight and seat class to create a booking.</p></div>
+  <div class="hero-badge">📋</div>
+</div>
+<div class="card">
+  <form method="post">
+    <div class="form-grid">
+      <div class="form-group" style="grid-column:1/-1">
+        <label>Passenger *</label>
+        <select name="passenger_id" required>
+          <option value="">— Select Passenger —</option>
+          {% for p in passengers %}
+            <option value="{{ p.passenger_id }}">{{ p.passenger_id }}. {{ p.name }} ({{ p.email }})</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <label>Flight *</label>
+        <select name="flight_id" required>
+          <option value="">— Select Flight —</option>
+          {% for f in flights %}
+            <option value="{{ f.flight_id }}">{{ f.flight_id }} | {{ f.route }} | {{ f.departure_time[:16].replace('T',' ') }} | ₹{{ "{:,.0f}".format(f.base_fare) }} | Avail: {{ f.total_capacity - f.booked }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Seat Class</label>
+        <select name="seat_class">
+          <option value="Economy">Economy (base fare)</option>
+          <option value="Business">Business (+₹1,500)</option>
+          <option value="First">First Class (+₹3,000)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Payment Mode</label>
+        <select name="payment_mode">
+          <option value="Card">Card</option>
+          <option value="UPI">UPI</option>
+          <option value="NetBanking">NetBanking</option>
+          <option value="Cash">Cash</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border)">
+      <p style="color:var(--muted);font-size:.85rem;margin-bottom:1rem">
+        ℹ️ A seat will be auto-assigned based on class. Payment is recorded immediately.
+      </p>
+      <button type="submit" class="btn btn-primary">✚ Confirm Booking &amp; Pay</button>
+      <a href="{{ url_for('bookings.index') }}" class="btn btn-outline" style="margin-left:.8rem">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}On-Time Status{% endblock %}
+{% block content %}
+<a href="{{ url_for('reports.index') }}" class="back-link">← Reports</a>
+<div class="page-hero"><div><h1>⏱️ On-Time Status</h1><p>Flight schedule and current status overview.</p></div><div class="hero-badge">⏱️</div></div>
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Flight</th><th>Route</th><th>Departure</th><th>Arrival</th><th>Aircraft</th><th>Status</th></tr></thead>
+      <tbody>
+      {% for r in rows %}
+        <tr>
+          <td><strong>{{ r.flight_id }}</strong></td>
+          <td>{{ r.route }}</td>
+          <td>{{ r.departure_time[:16].replace('T',' ') }}</td>
+          <td>{{ r.arrival_time[:16].replace('T',' ') }}</td>
+          <td style="color:var(--muted)">{{ r.aircraft }}</td>
+          <td>
+            {% if r.status=='Scheduled'  %}<span class="badge badge-success">{{ r.status }}</span>
+            {% elif r.status=='Delayed'  %}<span class="badge badge-warning">{{ r.status }}</span>
+            {% elif r.status=='Cancelled'%}<span class="badge badge-danger">{{ r.status }}</span>
+            {% else %}<span class="badge badge-muted">{{ r.status }}</span>{% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

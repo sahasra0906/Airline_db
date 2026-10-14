@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Flight {{ flight.flight_id }}{% endblock %}
+{% block content %}
+<a href="{{ url_for('flights.index') }}" class="back-link">← Back to Flights</a>
+
+<div class="page-hero">
+  <div>
+    <h1>{{ flight.flight_id }} &nbsp; {{ flight.route }}</h1>
+    <p>{{ flight.departure_time[:16].replace('T',' ') }} → {{ flight.arrival_time[:16].replace('T',' ') }}</p>
+  </div>
+  <div class="hero-badge">✈</div>
+</div>
+
+<div class="card">
+  <div class="card-title" style="margin-bottom:1rem">Flight Details</div>
+  <div class="meta-grid">
+    <div class="meta-item"><span class="mk">Aircraft Model</span><span class="mv">{{ flight.model }}</span></div>
+    <div class="meta-item"><span class="mk">Base Fare</span><span class="mv">₹{{ "{:,.0f}".format(flight.base_fare) }}</span></div>
+    <div class="meta-item"><span class="mk">Capacity</span><span class="mv">{{ flight.total_capacity }} seats</span></div>
+    <div class="meta-item"><span class="mk">Booked</span><span class="mv">{{ flight.booked }} / {{ flight.total_capacity }}</span></div>
+    <div class="meta-item"><span class="mk">Status</span>
+      <span class="mv">
+        {% if flight.status == 'Scheduled' %}<span class="badge badge-success">{{ flight.status }}</span>
+        {% elif flight.status == 'Delayed'  %}<span class="badge badge-warning">{{ flight.status }}</span>
+        {% elif flight.status == 'Cancelled'%}<span class="badge badge-danger">{{ flight.status }}</span>
+        {% else %}<span class="badge badge-muted">{{ flight.status }}</span>{% endif %}
+      </span>
+    </div>
+    <div class="meta-item"><span class="mk">Available Seats</span><span class="mv">{{ flight.total_capacity - flight.booked }}</span></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">🧾 Passenger Manifest ({{ manifest|length }})</span>
+    <a href="{{ url_for('bookings.new') }}" class="btn btn-primary btn-sm">✚ Book This Flight</a>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Passenger</th><th>Seat</th><th>Class</th><th>Booking</th><th>Ticket</th></tr></thead>
+      <tbody>
+      {% for m in manifest %}
+        <tr>
+          <td>{{ m.name }}</td>
+          <td><strong>{{ m.seat_number }}</strong></td>
+          <td>{{ m.seat_class }}</td>
+          <td>{% if m.booking_status=='Confirmed' %}<span class="badge badge-success">{{ m.booking_status }}</span>{% else %}<span class="badge badge-danger">{{ m.booking_status }}</span>{% endif %}</td>
+          <td>{% if m.ticket_status=='Active' %}<span class="badge badge-info">{{ m.ticket_status }}</span>{% else %}<span class="badge badge-muted">{{ m.ticket_status }}</span>{% endif %}</td>
+        </tr>
+      {% else %}
+        <tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem">No passengers booked yet.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

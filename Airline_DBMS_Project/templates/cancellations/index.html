@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Cancellations{% endblock %}
+{% block content %}
+<div class="page-hero">
+  <div><h1>❌ Cancellations</h1><p>Cancel a booking. 80% refund will be automatically initiated.</p></div>
+  <div class="hero-badge">❌</div>
+</div>
+
+<div class="card">
+  <form method="post" class="form-grid">
+    <div class="form-group">
+      <label>Booking ID *</label>
+      <input name="booking_id" required placeholder="e.g. 1">
+    </div>
+    <div class="form-group">
+      <label>Reason</label>
+      <input name="reason" placeholder="Change of plans">
+    </div>
+    <div style="display:flex;align-items:flex-end">
+      <button type="submit" class="btn btn-danger" onclick="return confirm('Cancel this booking? 80% refund will be issued.')">❌ Cancel Booking</button>
+    </div>
+  </form>
+</div>
+
+<div class="card">
+  <div class="card-title" style="margin-bottom:1rem">Cancellation History</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Booking#</th><th>Passenger</th><th>Flight</th><th>Date</th><th>Reason</th><th>Refund</th></tr></thead>
+      <tbody>
+      {% for r in records %}
+        <tr>
+          <td>{{ r.cancellation_id }}</td>
+          <td>#{{ r.booking_id }}</td>
+          <td>{{ r.passenger }}</td>
+          <td>{{ r.flight_id }}</td>
+          <td style="color:var(--muted);font-size:.83rem">{{ r.cancellation_date[:10] }}</td>
+          <td>{{ r.reason or '—' }}</td>
+          <td><span class="badge badge-warning">₹{{ "{:,.0f}".format(r.refund_amount) }}</span></td>
+        </tr>
+      {% else %}
+        <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:2rem">No cancellations yet.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

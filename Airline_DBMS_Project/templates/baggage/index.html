@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Baggage{% endblock %}
+{% block content %}
+<div class="page-hero">
+  <div><h1>🧳 Baggage Entry</h1><p>Add baggage for a confirmed booking. Extra charge: ₹500/kg above 25 kg for checked-in.</p></div>
+  <div class="hero-badge">🧳</div>
+</div>
+
+<div class="card">
+  <form method="post" class="form-grid">
+    <div class="form-group">
+      <label>Booking ID *</label>
+      <input name="booking_id" required placeholder="e.g. 1">
+    </div>
+    <div class="form-group">
+      <label>Weight (kg) *</label>
+      <input name="weight" type="number" step="0.1" min="0" required placeholder="22.5">
+    </div>
+    <div class="form-group">
+      <label>Baggage Type</label>
+      <select name="baggage_type">
+        <option value="CheckedIn">Checked-In</option>
+        <option value="HandCarry">Hand Carry</option>
+      </select>
+    </div>
+    <div style="display:flex;align-items:flex-end">
+      <button type="submit" class="btn btn-primary">🧳 Add Baggage</button>
+    </div>
+  </form>
+</div>
+
+<div class="card">
+  <div class="card-title" style="margin-bottom:1rem">Baggage Records</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Booking#</th><th>Passenger</th><th>Flight</th><th>Weight (kg)</th><th>Type</th><th>Extra Charge</th></tr></thead>
+      <tbody>
+      {% for r in records %}
+        <tr>
+          <td>{{ r.baggage_id }}</td>
+          <td><a href="{{ url_for('bookings.detail', bid=r.booking_id) }}" style="color:var(--accent);text-decoration:none">#{{ r.booking_id }}</a></td>
+          <td>{{ r.passenger }}</td>
+          <td>{{ r.flight_id }}</td>
+          <td>{{ r.weight_kg }}</td>
+          <td><span class="badge badge-info">{{ r.baggage_type }}</span></td>
+          <td>{% if r.extra_charge > 0 %}<span class="badge badge-warning">₹{{ "{:,.0f}".format(r.extra_charge) }}</span>{% else %}<span style="color:var(--muted)">₹0</span>{% endif %}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

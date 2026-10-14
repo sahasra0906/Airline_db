@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+
+<div class="page-hero">
+  <div>
+    <p style="color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem;">DATABASE APPLICATION</p>
+    <h1>✈ Airline Operations Dashboard</h1>
+    <p>Manage flights, passengers, bookings, check-ins, baggage and reports from one live database-connected prototype.</p>
+    <div style="display:flex;gap:.8rem;margin-top:1.2rem;flex-wrap:wrap;">
+      <a href="{{ url_for('bookings.new') }}"  class="btn btn-primary">✚ Create Booking</a>
+      <a href="{{ url_for('reports.index') }}" class="btn btn-outline">📊 View Reports</a>
+    </div>
+  </div>
+  <div class="hero-badge">✈</div>
+</div>
+
+<!-- STATS -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="value">{{ stats.flights }}</div>
+    <div class="label">Total Flights</div>
+  </div>
+  <div class="stat-card">
+    <div class="value">{{ stats.passengers }}</div>
+    <div class="label">Passengers Registered</div>
+  </div>
+  <div class="stat-card">
+    <div class="value">{{ stats.bookings }}</div>
+    <div class="label">Active Bookings</div>
+  </div>
+  <div class="stat-card">
+    <div class="value">{{ stats.checkins }}</div>
+    <div class="label">Checked In</div>
+  </div>
+  <div class="stat-card">
+    <div class="value">{{ stats.cancelled }}</div>
+    <div class="label">Cancellations</div>
+  </div>
+  <div class="stat-card">
+    <div class="value">₹{{ "{:,.0f}".format(stats.revenue) }}</div>
+    <div class="label">Revenue Collected</div>
+  </div>
+</div>
+
+<!-- QUICK ACTIONS -->
+<div class="actions-grid">
+  <a href="{{ url_for('flights.index') }}" class="action-card">
+    <div class="icon">🔍</div>
+    <div class="ac-title">Flight Search</div>
+    <div class="ac-desc">Search and browse available flights</div>
+    <div class="arrow">→</div>
+  </a>
+  <a href="{{ url_for('passengers.index') }}" class="action-card">
+    <div class="icon">👤</div>
+    <div class="ac-title">Passengers</div>
+    <div class="ac-desc">Add and manage passenger records</div>
+    <div class="arrow">→</div>
+  </a>
+  <a href="{{ url_for('bookings.new') }}" class="action-card">
+    <div class="icon">📋</div>
+    <div class="ac-title">New Booking</div>
+    <div class="ac-desc">Book a flight with seat allocation</div>
+    <div class="arrow">→</div>
+  </a>
+  <a href="{{ url_for('checkin.index') }}" class="action-card">
+    <div class="icon">✅</div>
+    <div class="ac-title">Check-In</div>
+    <div class="ac-desc">Check in confirmed passengers</div>
+    <div class="arrow">→</div>
+  </a>
+  <a href="{{ url_for('baggage.index') }}" class="action-card">
+    <div class="icon">🧳</div>
+    <div class="ac-title">Baggage Entry</div>
+    <div class="ac-desc">Record baggage weight and charges</div>
+    <div class="arrow">→</div>
+  </a>
+  <a href="{{ url_for('cancellations.index') }}" class="action-card">
+    <div class="icon">❌</div>
+    <div class="ac-title">Cancellations</div>
+    <div class="ac-desc">Cancel bookings with refund</div>
+    <div class="arrow">→</div>
+  </a>
+  <a href="{{ url_for('payments.index') }}" class="action-card">
+    <div class="icon">💳</div>
+    <div class="ac-title">Payments</div>
+    <div class="ac-desc">View all payment transactions</div>
+    <div class="arrow">→</div>
+  </a>
+  <a href="{{ url_for('reports.index') }}" class="action-card">
+    <div class="icon">📊</div>
+    <div class="ac-title">Reports</div>
+    <div class="ac-desc">Manifest, occupancy, revenue & more</div>
+    <div class="arrow">→</div>
+  </a>
+</div>
+
+<!-- UPCOMING FLIGHTS -->
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">🛫 Upcoming Scheduled Flights</span>
+    <a href="{{ url_for('flights.index') }}" class="btn btn-outline btn-sm">View All →</a>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr>
+        <th>Flight ID</th><th>Route</th><th>Departure</th><th>Arrival</th>
+        <th>Base Fare</th><th>Occupancy</th><th>Status</th>
+      </tr></thead>
+      <tbody>
+      {% for f in upcoming %}
+        <tr>
+          <td><a href="{{ url_for('flights.detail', flight_id=f.flight_id) }}" style="color:var(--accent);text-decoration:none;">{{ f.flight_id }}</a></td>
+          <td>{{ f.route }}</td>
+          <td>{{ f.departure_time[:16].replace('T',' ') }}</td>
+          <td>{{ f.arrival_time[:16].replace('T',' ') }}</td>
+          <td>₹{{ "{:,.0f}".format(f.base_fare) }}</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:.6rem;">
+              <div class="occ-bar" style="width:80px">
+                <div class="occ-fill" style="width:{{ [((f.booked / f.total_capacity)*100)|round|int, 100]|min }}%"></div>
+              </div>
+              <span style="font-size:.8rem;color:var(--muted)">{{ f.booked }}/{{ f.total_capacity }}</span>
+            </div>
+          </td>
+          <td><span class="badge badge-success">{{ f.status }}</span></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- RECENT BOOKINGS -->
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">📋 Recent Bookings</span>
+    <a href="{{ url_for('bookings.index') }}" class="btn btn-outline btn-sm">Manage Bookings →</a>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr>
+        <th>ID</th><th>Passenger</th><th>Flight</th><th>Route</th>
+        <th>Date</th><th>Fare</th><th>Status</th>
+      </tr></thead>
+      <tbody>
+      {% for b in recent_bookings %}
+        <tr>
+          <td><a href="{{ url_for('bookings.detail', bid=b.booking_id) }}" style="color:var(--accent);text-decoration:none;">#{{ b.booking_id }}</a></td>
+          <td><strong>{{ b.passenger }}</strong></td>
+          <td>{{ b.flight_id }}</td>
+          <td>{{ b.route }}</td>
+          <td style="color:var(--muted);font-size:.83rem">{{ b.booking_date[:10] }}</td>
+          <td>₹{{ "{:,.0f}".format(b.total_fare) }}</td>
+          <td>
+            {% if b.booking_status == 'Confirmed' %}
+              <span class="badge badge-success">{{ b.booking_status }}</span>
+            {% elif b.booking_status == 'Cancelled' %}
+              <span class="badge badge-danger">{{ b.booking_status }}</span>
+            {% else %}
+              <span class="badge badge-warning">{{ b.booking_status }}</span>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

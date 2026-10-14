@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Flight Manifest{% endblock %}
+{% block content %}
+<a href="{{ url_for('reports.index') }}" class="back-link">← Reports</a>
+<div class="page-hero"><div><h1>🧾 Flight Manifest</h1><p>All passengers across all flights.</p></div><div class="hero-badge">🧾</div></div>
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Flight</th><th>Route</th><th>Departure</th><th>Passenger</th><th>Passport</th><th>Seat</th><th>Class</th><th>Booking</th><th>Ticket</th></tr></thead>
+      <tbody>
+      {% for r in rows %}
+        <tr>
+          <td><strong>{{ r.flight_id }}</strong></td><td>{{ r.route }}</td>
+          <td style="color:var(--muted);font-size:.82rem">{{ r.departure_time[:16].replace('T',' ') }}</td>
+          <td>{{ r.passenger }}</td><td>{{ r.passport_no or '—' }}</td>
+          <td><strong>{{ r.seat_number }}</strong></td>
+          <td><span class="badge badge-info">{{ r.seat_class }}</span></td>
+          <td>{% if r.booking_status=='Confirmed' %}<span class="badge badge-success">{{ r.booking_status }}</span>{% else %}<span class="badge badge-danger">{{ r.booking_status }}</span>{% endif %}</td>
+          <td>{% if r.ticket_status=='Active' %}<span class="badge badge-info">{{ r.ticket_status }}</span>{% else %}<span class="badge badge-muted">{{ r.ticket_status }}</span>{% endif %}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Occupancy Report{% endblock %}
+{% block content %}
+<a href="{{ url_for('reports.index') }}" class="back-link">← Reports</a>
+<div class="page-hero"><div><h1>💺 Occupancy Report</h1><p>Seat occupancy percentage per flight.</p></div><div class="hero-badge">💺</div></div>
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Flight</th><th>Route</th><th>Departure</th><th>Capacity</th><th>Booked</th><th>Available</th><th>Occupancy %</th></tr></thead>
+      <tbody>
+      {% for r in rows %}
+        <tr>
+          <td><strong>{{ r.flight_id }}</strong></td>
+          <td>{{ r.route }}</td>
+          <td style="color:var(--muted);font-size:.82rem">{{ r.departure_time[:16].replace('T',' ') }}</td>
+          <td>{{ r.total_capacity }}</td>
+          <td>{{ r.booked }}</td>
+          <td>{{ r.total_capacity - r.booked }}</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:.8rem;">
+              <div class="occ-bar" style="width:100px"><div class="occ-fill" style="width:{{ [r.pct|int, 100]|min }}%"></div></div>
+              <span>{{ r.pct }}%</span>
+            </div>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

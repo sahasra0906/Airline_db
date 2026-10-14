@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Check-In{% endblock %}
+{% block content %}
+<div class="page-hero">
+  <div><h1>✅ Passenger Check-In</h1><p>Enter a Booking ID to check in a confirmed passenger.</p></div>
+  <div class="hero-badge">✅</div>
+</div>
+
+<div class="card">
+  <form method="post" class="form-grid">
+    <div class="form-group">
+      <label>Booking ID *</label>
+      <input name="booking_id" required placeholder="e.g. 1">
+    </div>
+    <div class="form-group">
+      <label>Gate Number</label>
+      <input name="gate" placeholder="e.g. G12">
+    </div>
+    <div style="display:flex;align-items:flex-end">
+      <button type="submit" class="btn btn-success">✅ Check In Passenger</button>
+    </div>
+  </form>
+</div>
+
+<div class="card">
+  <div class="card-title" style="margin-bottom:1rem">Recent Check-Ins</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Check-In#</th><th>Booking#</th><th>Passenger</th><th>Flight</th><th>Seat</th><th>Gate</th><th>Time</th><th>Boarding Pass</th></tr></thead>
+      <tbody>
+      {% for c in checkins %}
+        <tr>
+          <td>#{{ c.checkin_id }}</td>
+          <td><a href="{{ url_for('bookings.detail', bid=c.booking_id) }}" style="color:var(--accent);text-decoration:none">#{{ c.booking_id }}</a></td>
+          <td>{{ c.passenger }}</td>
+          <td>{{ c.flight_id }}</td>
+          <td><strong>{{ c.seat_number }}</strong></td>
+          <td>{{ c.gate_number }}</td>
+          <td style="color:var(--muted);font-size:.83rem">{{ c.checkin_time[:16].replace('T',' ') }}</td>
+          <td><span style="font-family:monospace;font-size:.82rem;color:var(--success)">{{ c.boarding_pass }}</span></td>
+        </tr>
+      {% else %}
+        <tr><td colspan="8" style="text-align:center;color:var(--muted);padding:2rem">No check-ins yet.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Baggage Report{% endblock %}
+{% block content %}
+<a href="{{ url_for('reports.index') }}" class="back-link">← Reports</a>
+<div class="page-hero"><div><h1>🧳 Baggage Summary</h1><p>All baggage records grouped by flight.</p></div><div class="hero-badge">🧳</div></div>
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Flight</th><th>Route</th><th>Passenger</th><th>Weight (kg)</th><th>Type</th><th>Extra Charge</th></tr></thead>
+      <tbody>
+      {% for r in rows %}
+        <tr>
+          <td><strong>{{ r.flight_id }}</strong></td>
+          <td>{{ r.route }}</td>
+          <td>{{ r.passenger }}</td>
+          <td>{{ r.weight_kg }}</td>
+          <td><span class="badge badge-info">{{ r.baggage_type }}</span></td>
+          <td>{% if r.extra_charge > 0 %}<span class="badge badge-warning">₹{{ "{:,.0f}".format(r.extra_charge) }}</span>{% else %}<span style="color:var(--muted)">₹0</span>{% endif %}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
